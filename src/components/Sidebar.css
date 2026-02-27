@@ -1,0 +1,99 @@
+/* Sidebar.css */
+.app-sidebar {
+    width: 260px;
+    height: 100vh;
+    background-color: white;
+    border-left: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    font-family: 'Rubik', sans-serif;
+    direction: rtl;
+}
+
+.app-sidebar-header {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #137fec;
+}
+
+.app-sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.app-sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    margin: 0 16px 24px 16px;
+    background-color: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Dana');
+    background-size: cover;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.profile-role {
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.app-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.app-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    margin: 0 16px;
+    border-radius: 10px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.app-nav-item:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.app-nav-item.active {
+    background-color: rgba(19, 127, 236, 0.1);
+    color: #137fec;
+}
+
+.app-sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid #f1f5f9;
+}
