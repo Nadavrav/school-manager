@@ -1,34 +1,47 @@
 import React, { useState } from 'react';
 import { supabase } from '../../supabase';
-import './Login.css'; // ניצור עיצוב בסיסי בהמשך
+import './Login.css';
 
-const Login = () => {
+// הוספנו את onLoginSuccess כפרופ כדי לדווח ל-App על התחברות מוצלחת
+const Login = ({ onLoginSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // כאן אנחנו מגדירים מי המנהל במערכת (תוכל לשנות לאימייל שתגדיר ב-Supabase)
+  const ADMIN_EMAIL = 'admin@royk.com'; 
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    // הוספנו את data בנוסף ל-error כדי שנוכל לשלוף את פרטי המשתמש
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
       setError('פרטי ההתחברות שגויים. אנא נסה שוב.');
+      setLoading(false); // במקרה של שגיאה מפסיקים את הטעינה כאן
+    } else {
+      // אם ההתחברות הצליחה, נבדוק אם זה המנהל
+      const isUserAdmin = data.user.email === ADMIN_EMAIL;
+      
+      // נשלח את המידע ל-App.jsx (אם הפונקציה קיימת)
+      if (onLoginSuccess) {
+        onLoginSuccess(data.user, isUserAdmin);
+      }
     }
-    setLoading(false);
   };
 
   return (
     <div className="login-wrapper">
       <div className="login-card">
         <div className="login-header">
-          <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#3b82f6' }}>school</span>
+          <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#137fec' }}>school</span>
           <h2>EduTrack</h2>
           <p>התחברות למערכת ניהול מורים</p>
         </div>
@@ -44,6 +57,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)} 
               required 
               dir="ltr"
+              placeholder="name@example.com"
             />
           </div>
           
@@ -55,6 +69,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)} 
               required 
               dir="ltr"
+              placeholder="••••••••"
             />
           </div>
           

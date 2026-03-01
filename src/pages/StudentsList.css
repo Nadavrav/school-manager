@@ -4,9 +4,11 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* הוסר overflow: hidden כדי לאפשר לתוכן לזרום */
     background-color: #f8fafc;
-    padding: 0; /* איפוס פדינג חיצוני */
+    padding: 0;
+    width: 100%; /* הבטחת רוחב מלא */
+    min-height: 100vh;
 }
 
 /* Header */
@@ -41,7 +43,8 @@
     display: flex;
     align-items: center;
     position: relative;
-    max-width: 500px;
+    width: 100%;
+    max-width: 500px; /* השארתי את המגבלה כדי שלא ימתח מדי לרוחב */
 }
 
 .search-bar input {
@@ -65,18 +68,20 @@
 
 .search-bar .material-symbols-outlined {
     position: absolute;
-    right: 52px;
+    right: 52px; /* מותאם ל-Padding של ה-40px */
     color: #94a3b8;
     pointer-events: none;
 }
 
-/* Grid & Cards */
+/* Grid & Cards - כאן בוצע התיקון המרכזי */
 .students-grid {
+    flex: 1; /* לוקח את כל הגובה הנותר */
     padding: 0 40px 48px 40px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    /* הגדרה דינמית שתמלא את כל שטח המסך הפנוי */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 24px;
-    overflow-y: auto;
+    overflow-y: auto; /* מאפשר גלילה רק לאזור הכרטיסים */
 }
 
 .student-card {
@@ -89,6 +94,7 @@
     align-items: center;
     text-align: center;
     transition: all 0.3s ease;
+    height: fit-content;
 }
 
 .student-card:hover {
@@ -189,50 +195,4 @@
     padding: 32px;
     border-radius: 16px;
     box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-}
-
-.modal-content h2 {
-    margin: 0 0 24px 0;
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #0f172a;
-}
-
-.form-group {
-    margin-bottom: 16px;
-    text-align: right;
-}
-
-.form-group label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #475569;
-    margin-bottom: 6px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    outline: none;
-}
-
-.form-group input:focus {
-    border-color: #137fec;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 24px;
-}
-
-.modal-actions button {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
 }

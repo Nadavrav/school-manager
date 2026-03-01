@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabase';
-import './StudentsList.css';
+import './StudentsList.css'; 
 
-const StudentsList = ({ onNavigate }) => {
-  const [students, setStudents] = useState([]);
+const TeachersList = ({ onNavigate }) => {
+  const [teachers, setTeachers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -14,13 +14,14 @@ const StudentsList = ({ onNavigate }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
   
+  // ניהול טופס הוספת מורה חדש
   const [formData, setFormData] = useState({
     full_name: '',
-    class_name: ''
+    role: ''
   });
 
   useEffect(() => {
-    fetchStudents();
+    fetchTeachers();
   }, []);
 
   // איפוס עמוד כשמחפשים משהו חדש
@@ -28,23 +29,32 @@ const StudentsList = ({ onNavigate }) => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const fetchStudents = async () => {
+  const fetchTeachers = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('students')
-        .select(`
-          *,
-          teachers:main_teacher_id (
-            full_name
-          )
-        `)
+      // שליפת המורים וגם ספירה של התלמידים שכל מורה אחראי עליהם
+      const { data: teachersData, error: teachersError } = await supabase
+        .from('teachers')
+        .select('*')
         .order('full_name', { ascending: true });
 
-      if (error) throw error;
-      setStudents(data || []);
+      if (teachersError) throw teachersError;
+
+      const { data: studentsData, error: studentsError } = await supabase
+        .from('students')
+        .select('main_teacher_id');
+        
+      if (studentsError) throw studentsError;
+
+      // ספירת התלמידים לכל מורה
+      const teachersWithCount = teachersData.map(teacher => {
+        const studentCount = studentsData.filter(s => s.main_teacher_id === teacher.id).length;
+        return { ...teacher, studentCount };
+      });
+
+      setTeachers(teachersWithCount || []);
     } catch (error) {
-      console.error('Error fetching students:', error);
+      console.error('Error fetching teachers:', error);
     } finally {
       setLoading(false);
     }
@@ -54,56 +64,44 @@ const StudentsList = ({ onNavigate }) => {
     e.preventDefault();
     try {
       const { error } = await supabase
-        .from('students')
+        .from('teachers')
         .insert([
           { 
             full_name: formData.full_name, 
-            class_name: formData.class_name,
-            status: 'active'
+            role: formData.role 
           }
         ]);
 
       if (error) throw error;
-      
+
       setIsModalOpen(false);
-      setFormData({ full_name: '', class_name: '' });
-      fetchStudents(); 
+      setFormData({ full_name: '', role: '' });
+      fetchTeachers(); 
     } catch (error) {
-      alert('שגיאה בהוספת תלמיד');
-      console.error(error);
+      alert('שגיאה בהוספת מורה');
     }
   };
 
-  // סינון חכם שבודק את מילת החיפוש בשם, בכיתה ובשם המורה
-  const filteredStudents = students.filter(student => {
-    const searchLower = searchTerm.toLowerCase();
-    const studentName = (student.full_name || '').toLowerCase();
-    const className = (student.class_name || '').toLowerCase();
-    const teacherName = (student.teachers?.full_name || 'ללא מורה').toLowerCase();
-
-    return (
-      studentName.includes(searchLower) ||
-      className.includes(searchLower) ||
-      teacherName.includes(searchLower)
-    );
-  });
+  // סינון מורים לפי חיפוש (שם או תפקיד/מקצוע)
+  const filteredTeachers = teachers.filter(teacher => 
+    (teacher.full_name && teacher.full_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (teacher.role && teacher.role.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   // חישובי פגינציה
-  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
-  const currentStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(filteredTeachers.length / itemsPerPage);
+  const currentTeachers = filteredTeachers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="page-container">
-      
-      {/* כותרת הדף */}
       <header className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <h1>רשימת תלמידים</h1>
-          <p>ניהול ומעקב אחר תלמידי המרכז</p>
+          <h1>צוות ההוראה</h1>
+          <p>ניהול מורים והגדרת תחומי אחריות במרכז</p>
         </div>
         <button className="btn-primary" onClick={() => setIsModalOpen(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span className="material-symbols-outlined">person_add</span>
-          הוספת תלמיד
+          הוספת מורה
         </button>
       </header>
 
@@ -112,7 +110,7 @@ const StudentsList = ({ onNavigate }) => {
         <span className="material-symbols-outlined" style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }}>search</span>
         <input 
           type="text" 
-          placeholder="חיפוש חופשי לפי שם, כיתה או מורה אחראי..." 
+          placeholder="חיפוש חופשי לפי שם או מקצוע..." 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ width: '100%', padding: '14px 48px 14px 16px', borderRadius: '12px', border: '1px solid #cbd5e1', fontSize: '1rem', outline: 'none', transition: 'border-color 0.2s', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}
@@ -120,16 +118,16 @@ const StudentsList = ({ onNavigate }) => {
       </div>
 
       {loading ? (
-        <div className="loading">טוען תלמידים...</div>
+        <div className="loading">טוען צוות...</div>
       ) : (
         <div style={{ margin: '0 40px', display: 'flex', flexDirection: 'column', minHeight: '60vh' }}>
           
-          {/* גריד כרטיסיות התלמידים קומפקטי - 5 בשורה */}
+          {/* גריד כרטיסיות מורים קומפקטי - 5 בשורה */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-            {currentStudents.length > 0 ? (
-              currentStudents.map(student => (
+            {currentTeachers.length > 0 ? (
+              currentTeachers.map(teacher => (
                 <div 
-                  key={student.id} 
+                  key={teacher.id} 
                   style={{ 
                     backgroundColor: 'white', 
                     borderRadius: '16px', 
@@ -143,25 +141,25 @@ const StudentsList = ({ onNavigate }) => {
                     position: 'relative'
                   }}
                 >
-                  {/* אווטאר קומפקטי */}
-                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: '#f1f5f9', color: '#137fec', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '12px' }}>
-                    {student.full_name ? student.full_name.charAt(0) : '?'}
+                  {/* אווטאר קומפקטי בצבע כהה-מורה */}
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '12px' }}>
+                    {teacher.full_name ? teacher.full_name.charAt(0) : '?'}
                   </div>
                   
-                  {/* פרטים מוקטנים מעט */}
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#0f172a' }}>{student.full_name}</h3>
-                  <p style={{ margin: '0 0 12px 0', color: '#64748b', fontWeight: '500', fontSize: '0.9rem' }}>כיתה: {student.class_name}</p>
+                  {/* פרטים */}
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '1.1rem', color: '#0f172a' }}>{teacher.full_name}</h3>
+                  <p style={{ margin: '0 0 12px 0', color: '#64748b', fontWeight: '500', fontSize: '0.9rem' }}>{teacher.role || 'מורה'}</p>
                   
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#64748b', fontSize: '0.8rem', backgroundColor: '#f8fafc', padding: '4px 8px', borderRadius: '8px', marginBottom: '16px', width: '100%', justifyContent: 'center', boxSizing: 'border-box' }}>
-                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>person</span>
-                    מורה: {student.teachers?.full_name || 'לא הוגדר'}
+                    <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>group</span>
+                    {teacher.studentCount} תלמידים
                   </div>
 
-                  {/* כפתור מעבר קומפקטי */}
+                  {/* כפתור מעבר */}
                   <button 
                     className="btn-secondary"
                     style={{ width: '100%', padding: '8px', marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontSize: '0.9rem' }}
-                    onClick={() => onNavigate('profile', student.id)}
+                    onClick={() => onNavigate('teacherProfile', teacher.id)}
                   >
                     לפרופיל
                     <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_back</span>
@@ -171,13 +169,13 @@ const StudentsList = ({ onNavigate }) => {
             ) : (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px', color: '#64748b', backgroundColor: 'white', borderRadius: '16px', border: '1px dashed #cbd5e1' }}>
                 <span className="material-symbols-outlined" style={{ fontSize: '48px', marginBottom: '16px', opacity: 0.5 }}>group_off</span>
-                <p style={{ fontSize: '1.1rem' }}>לא נמצאו תלמידים התואמים לחיפוש.</p>
+                <p style={{ fontSize: '1.1rem' }}>לא נמצאו מורים התואמים לחיפוש.</p>
               </div>
             )}
           </div>
 
           {/* פגינציה */}
-          {filteredStudents.length > 0 && (
+          {filteredTeachers.length > 0 && (
             <div className="pagination-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: 'auto' }}>
               <div className="pagination-info" style={{ fontSize: '0.9rem', color: '#64748b', fontWeight: '500' }}>
                 עמוד {currentPage} מתוך {totalPages}
@@ -205,13 +203,13 @@ const StudentsList = ({ onNavigate }) => {
         </div>
       )}
 
-      {/* מודאל הוספת תלמיד */}
+      {/* מודאל הוספת מורה חדש */}
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxWidth: '400px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
                <span className="material-symbols-outlined" style={{ color: '#137fec', fontSize: '28px' }}>person_add</span>
-               <h3 style={{ margin: 0 }}>הוספת תלמיד חדש</h3>
+               <h3 style={{ margin: 0 }}>הוספת מורה חדש</h3>
             </div>
             
             <form onSubmit={handleSubmit}>
@@ -221,25 +219,25 @@ const StudentsList = ({ onNavigate }) => {
                   type="text" 
                   className="form-input"
                   required 
+                  autoFocus
                   value={formData.full_name}
                   onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-                  autoFocus
                 />
               </div>
               <div className="form-group">
-                <label>כיתה</label>
+                <label>מקצועות לימוד</label>
                 <input 
                   type="text" 
                   className="form-input"
                   required 
-                  placeholder="לדוגמה: י' 2"
-                  value={formData.class_name}
-                  onChange={(e) => setFormData({...formData, class_name: e.target.value})}
+                  placeholder="לדוגמה: מתמטיקה, אנגלית"
+                  value={formData.role}
+                  onChange={(e) => setFormData({...formData, role: e.target.value})}
                 />
               </div>
               <div className="modal-actions" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '32px' }}>
                 <button type="button" className="btn-secondary" style={{ width: 'auto', padding: '8px 24px' }} onClick={() => setIsModalOpen(false)}>ביטול</button>
-                <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '8px 24px' }}>שמור תלמיד</button>
+                <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '8px 24px' }}>שמור מורה</button>
               </div>
             </form>
           </div>
@@ -249,4 +247,4 @@ const StudentsList = ({ onNavigate }) => {
   );
 };
 
-export default StudentsList;
+export default TeachersList;

@@ -72,6 +72,38 @@
     border-radius: 20px;
 }
 
+/* --- עיצוב חדש לבוחר מורה --- */
+.teacher-selector-area {
+    display: flex;
+    align-items: center;
+}
+
+.teacher-selector-area .meta-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.teacher-selector-area .meta-item:hover {
+    background: #e2e8f0;
+    border-color: #137fec;
+    color: #137fec;
+}
+
+.form-input-sm {
+    padding: 6px 12px;
+    border: 1.5px solid #137fec;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #0f172a;
+    background-color: #ffffff;
+    outline: none;
+    font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(19, 127, 236, 0.1);
+}
+/* --------------------------- */
+
 /* Content Grid */
 .profile-content-grid {
     display: grid;
@@ -84,6 +116,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    padding: 0 4px;
 }
 
 .section-title {
@@ -127,11 +160,6 @@
     color: #334155;
 }
 
-.td-primary {
-    font-weight: 600;
-    color: #1e293b;
-}
-
 /* Badges */
 .badge {
     padding: 4px 10px;
@@ -144,60 +172,7 @@
 .badge-danger { background: #fee2e2; color: #991b1b; }
 .badge-warning { background: #fef9c3; color: #854d0e; }
 
-/* Summary Card */
-.summary-card {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    padding: 24px;
-    border-radius: 16px;
-    color: white;
-    margin-top: 24px;
-}
-
-.summary-title {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin: 0 0 8px 0;
-}
-
-.summary-value {
-    font-size: 2rem;
-    font-weight: 800;
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-}
-
-.summary-trend {
-    font-size: 0.85rem;
-    background: rgba(34, 197, 94, 0.2);
-    color: #4ade80;
-    padding: 4px 8px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
 /* Buttons */
-.btn-edit-profile {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: white;
-    border: 1px solid #cbd5e1;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-edit-profile:hover {
-    background: #f1f5f9;
-    border-color: #94a3b8;
-}
-
-/* עיצוב כפתור הוספת ציון בתוך הפרופיל */
 .btn-add-inline {
     display: flex;
     align-items: center;
@@ -222,30 +197,46 @@
     transform: translateY(-1px);
 }
 
-.btn-add-inline .material-symbols-outlined {
-    font-size: 20px !important;
-}
-
-/* התאמת הכותרת של הסקשן כדי שהכפתור ישב טוב */
-.section-header {
+.action-btns {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    padding: 0 4px;
+    gap: 12px;
 }
 
-.action-icon {
+.action-btns span {
     font-size: 18px !important;
     color: #cbd5e1;
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.action-icon:hover {
+.action-btns span:hover {
     color: #137fec;
 }
 
-.action-icon.delete:hover {
+.action-btns span.delete:hover {
     color: #ef4444;
+}
+
+/* Quick Filters */
+.quick-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-tag {
+    padding: 6px 14px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-tag.active {
+    background: #137fec;
+    color: white;
+    border-color: #137fec;
 }

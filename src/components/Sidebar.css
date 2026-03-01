@@ -1,4 +1,3 @@
-/* Sidebar.css */
 .app-sidebar {
     width: 260px;
     height: 100vh;
@@ -9,13 +8,17 @@
     flex-shrink: 0;
     font-family: 'Rubik', sans-serif;
     direction: rtl;
+    transition: width 0.3s ease; /* האנימציה שמאפשרת כיווץ והרחבה חלקים */
+}
+
+/* מצב מכווץ */
+.app-sidebar.collapsed {
+    width: 80px;
 }
 
 .app-sidebar-header {
-    padding: 24px;
     display: flex;
     align-items: center;
-    gap: 12px;
     color: #137fec;
 }
 
@@ -25,40 +28,23 @@
     color: #0f172a;
 }
 
-.app-sidebar-profile {
+/* כפתור הכיווץ/הרחבה */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px;
-    margin: 0 16px 24px 16px;
-    background-color: #f8fafc;
-    border: 1px solid #f1f5f9;
-    border-radius: 12px;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
 }
 
-.profile-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #e2e8f0;
-    background-image: url('https://api.dicebear.com/7.x/avataaars/svg?seed=Dana');
-    background-size: cover;
-}
-
-.profile-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-name {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #1e293b;
-}
-
-.profile-role {
-    font-size: 0.75rem;
-    color: #64748b;
+.toggle-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
 }
 
 .app-sidebar-nav {
@@ -81,6 +67,8 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
+    white-space: nowrap; /* מונע מהטקסט להישבר שורות בזמן הכיווץ */
+    overflow: hidden; /* מסתיר שאריות טקסט באנימציה */
 }
 
 .app-nav-item:hover {
@@ -93,7 +81,50 @@
     color: #137fec;
 }
 
+/* עיצוב הפריטים כשהתפריט מכווץ */
+.app-sidebar.collapsed .app-nav-item {
+    justify-content: center;
+    padding: 12px;
+    margin: 0 8px;
+}
+
 .app-sidebar-footer {
     padding: 16px;
     border-top: 1px solid #f1f5f9;
+}
+
+/* עיצוב בועת ההתראות */
+.notification-badge {
+    background-color: #ef4444; 
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-right: auto; 
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+    transition: all 0.2s ease;
+}
+
+.app-nav-item.active .notification-badge {
+    background-color: white;
+    color: #ef4444;
+}
+
+/* בועת ההתראות במצב מכווץ - הופכת לעיגול קטן בפינת האייקון */
+.app-sidebar.collapsed .notification-badge {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    margin: 0;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 9px;
 }
