@@ -1,0 +1,190 @@
+.settings-content {
+  padding: 0 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.settings-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 150px); 
+}
+
+.settings-card-header, 
+.subjects-toolbar {
+  flex-shrink: 0; 
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+.settings-card-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #0f172a;
+}
+
+.settings-card-header .icon {
+  color: #3b82f6;
+  font-size: 28px;
+}
+
+/* --- סרגל הכלים החדש (חיפוש והוספה באותה שורה) --- */
+.subjects-toolbar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap; /* מאפשר שבירת שורה במסכים קטנים מאוד */
+}
+
+.search-box {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-box .search-icon {
+  position: absolute;
+  right: 12px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.search-box .form-input {
+  width: 100%;
+  padding-right: 40px;
+  background-color: #f8fafc;
+}
+
+.add-subject-form {
+  display: flex;
+  flex: 1.5; /* נותן טיפה יותר מקום לטופס ההוספה על פני החיפוש */
+  gap: 12px;
+}
+
+.form-input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* --- רשימת המקצועות --- */
+.subjects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1; 
+  min-height: 0; 
+  overflow-y: auto;
+  padding-left: 8px;
+  padding-right: 4px;
+}
+
+.subjects-list::-webkit-scrollbar {
+  width: 6px;
+}
+.subjects-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.subjects-list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.subjects-list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.subject-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: background-color 0.2s;
+  flex-shrink: 0; 
+}
+
+.subject-item:hover {
+  background-color: #f1f5f9;
+}
+
+.subject-name {
+  font-weight: 500;
+  color: #334155;
+}
+
+/* --- פעולות על מקצוע וכפתורי עריכה --- */
+.subject-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-mode-container {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+  align-items: center;
+}
+
+.edit-input {
+  padding: 6px 12px;
+  border-color: #3b82f6;
+}
+
+.btn-icon-danger,
+.btn-icon-edit,
+.btn-icon-success,
+.btn-icon-cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-icon-danger { color: #ef4444; }
+.btn-icon-danger:hover { background-color: #fee2e2; }
+
+.btn-icon-edit { color: #64748b; }
+.btn-icon-edit:hover { background-color: #e2e8f0; color: #3b82f6; }
+
+.btn-icon-success { color: #10b981; }
+.btn-icon-success:hover { background-color: #d1fae5; }
+
+.btn-icon-cancel { color: #64748b; }
+.btn-icon-cancel:hover { background-color: #e2e8f0; }
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.9rem;
+  margin-top: -10px;
+  margin-bottom: 16px;
+}

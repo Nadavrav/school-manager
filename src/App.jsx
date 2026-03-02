@@ -9,6 +9,7 @@ import TeacherProfile from "./pages/TeacherProfile";
 import IrregularReports from "./pages/IrregularReports";
 import Login from "./pages/Login";
 import AdminReports from "./pages/AdminReports";
+import AdminSettings from "./pages/AdminSettings";
 import "./App.css";
 
 // כאן מגדירים מי המנהל הראשי של המערכת
@@ -122,6 +123,8 @@ function App() {
         return isAdmin ? <IrregularReports onNavigate={handleNavigate} /> : <StudentsList onNavigate={handleNavigate} />;
       case "admin_reports":
         return isAdmin ? <AdminReports /> : <StudentsList onNavigate={handleNavigate} />;
+      case "settings":
+        return isAdmin ? <AdminSettings /> : <StudentsList onNavigate={handleNavigate} />;
       default:
         return <StudentsList onNavigate={handleNavigate} />;
     }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css';
+import schoolLogo from '../assets/school-logo.png'; 
 
-// הוספנו את isAdmin לפרופס
 const Sidebar = ({ currentPage, onNavigate, onLogout, unhandledCount, isAdmin }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -9,11 +9,23 @@ const Sidebar = ({ currentPage, onNavigate, onLogout, unhandledCount, isAdmin })
     <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
       
       {/* אזור הלוגו העליון עם כפתור הכיווץ */}
-      <div className="app-sidebar-header" style={{ justifyContent: isCollapsed ? 'center' : 'space-between', padding: isCollapsed ? '24px 0' : '24px' }}>
+      <div 
+        className="app-sidebar-header" 
+        style={{ 
+          display: 'flex',
+          justifyContent: isCollapsed ? 'center' : 'space-between', 
+          alignItems: 'center', 
+          padding: isCollapsed ? '24px 0' : '24px 16px' 
+        }}
+      >
         {!isCollapsed && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>school</span>
-            <span className="app-sidebar-logo">EduTrack</span>
+          // מרכוז הלוגו ללא טקסט
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, paddingRight: '12px' }}>
+            <img 
+              src={schoolLogo} 
+              alt="לוגו בית הספר" 
+              style={{ width: '120px', height: 'auto', objectFit: 'contain' }} 
+            />
           </div>
         )}
         
@@ -26,7 +38,7 @@ const Sidebar = ({ currentPage, onNavigate, onLogout, unhandledCount, isAdmin })
       </div>
 
       {/* תפריט הניווט */}
-      <nav className="app-sidebar-nav" style={{ marginTop: '24px' }}>
+      <nav className="app-sidebar-nav" style={{ marginTop: '12px' }}>
         
         <div 
           className={`app-nav-item ${currentPage === 'students' || currentPage === 'profile' ? 'active' : ''}`}
@@ -81,6 +93,15 @@ const Sidebar = ({ currentPage, onNavigate, onLogout, unhandledCount, isAdmin })
             >
               <span className="material-symbols-outlined">bar_chart</span>
               {!isCollapsed && <span>דוחות מנהל</span>}
+            </div>
+
+            <div 
+              className={`app-nav-item ${currentPage === 'settings' ? 'active' : ''}`}
+              onClick={() => onNavigate('settings')}
+              title={isCollapsed ? "הגדרות מערכת" : ""}
+            >
+              <span className="material-symbols-outlined">settings</span>
+              {!isCollapsed && <span>הגדרות מערכת</span>}
             </div>
           </>
         )}
